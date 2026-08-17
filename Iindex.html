@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAI '26 | National Level Technical Symposium | KEC & IETE</title>
+    
+    <!-- Google Fonts: Restored Classic Orbitron, Michroma, Syncopate & Rajdhani Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Michroma&family=Orbitron:wght@400;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- COLOR PALETTE & RESTORED FONT VARIABLES --- */
+        :root {
+            --bg-void: #010409;
+            --bg-metallic: #081017;
+            --bg-card: rgba(6, 16, 26, 0.88);
+            --bg-card-hover: rgba(12, 28, 42, 0.95);
+            
+            --poster-green: #00ff66;
+            --poster-bright-green: #39ff14;
+            --poster-cyan: #00d9ff;
+            --poster-blue: #0066ff;
+            --poster-gold: #eab308;
+            --doom-glow: rgba(0, 255, 102, 0.7);
+
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --border-tech: rgba(0, 255, 102, 0.35);
+            --border-cyan: rgba(0, 217, 255, 0.5);
+
+            /* RESTORED ORIGINAL FONTS */
+            --font-mirai: 'Orbitron', 'Michroma', sans-serif;
+            --font-title: 'Orbitron', sans-serif;
+            --font-display: 'Syncopate', 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-code: 'Fira Code', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 18px;
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* --- ATMOSPHERIC POSTER BACKGROUND WRAPPER --- */
+        .poster-bg-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            pointer-events: none;
+            background: 
+                /* Bottom Green Horizon Glow */
+                radial-gradient(ellipse 130% 45% at 50% 100%, rgba(0, 255, 102, 0.28) 0%, rgba(0, 255, 102, 0.08) 40%, transparent 75%),
+                /* Top Right Blue/Cyan Cosmic Light Arc Flare */
+                radial-gradient(circle at 85% 18%, rgba(0, 217, 255, 0.35) 0%, rgba(0, 102, 255, 0.2) 30%, transparent 65%),
+                /* Dark Void Metallic Radial */
+                radial-gradient(circle at 50% 30%, #061523 0%, #020710 60%, #000205 100%);
+        }
+
+        /* CANVAS FOR DIGITAL SCROLLING LETTERS & SYMBOLS (MATRIX STREAM) */
+        #posterCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        /* Circuit line overlay mimicking high-tech grid */
+        .circuit-header-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 50% 50%, transparent 30%, var(--bg-void) 95%),
+                linear-gradient(rgba(0, 255, 102, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 45px 45px, 45px 45px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- NAVBAR --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 0.8rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(1, 4, 9, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-tech);
+            z-index: 1000;
+        }
+
+        .header-brand-left, .header-brand-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .institution-logo {
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--poster-green));
+            transition: transform 0.3s ease;
+        }
+
+        .institution-logo:hover {
+            transform: scale(1.08);
+        }
+
+        .brand-logo {
+            font-family: var(--font-mirai);
+            font-weight: 800;
+            font-size: 1.7rem;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .brand-logo span {
+            color: var(--poster-green);
+            text-shadow: 0 0 14px var(--poster-green);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: var(--font-title);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--poster-green);
+            box-shadow: 0 0 10px var(--poster-green);
+            transition: 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--poster-green);
+            text-shadow: 0 0 10px var(--poster-green);
+        }
+
+        .btn-tactical {
+            background: rgba(0, 255, 102, 0.08);
+            border: 1px solid var(--poster-green);
+            color: var(--poster-green);
+            padding: 0.6rem 1.5rem;
+            font-family: var(--font-title);
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-decoration: none;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 18px rgba(0, 255, 102, 0.25);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-tactical:hover {
+            background: var(--poster-green);
+            color: #000;
+            box-shadow: 0 0 30px var(--poster-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-cyan {
+            border-color: var(--poster-cyan);
+            color: var(--poster-cyan);
+            box-shadow: 0 0 18px rgba(0, 217, 255, 0.25);
+        }
+
+        .btn-cyan:hover {
+            background: var(--poster-cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--poster-cyan);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8.5rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-kec-logo {
+            max-width: 290px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 1.8rem;
+            filter: drop-shadow(0 0 30px rgba(0, 255, 102, 0.6));
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        .hero-kec-logo:hover {
+            transform: scale(1.06);
+            filter: drop-shadow(0 0 45px rgba(0, 255, 102, 0.9));
+        }
+
+        .symposium-tag {
+            background: rgba(0, 217, 255, 0.12);
+            border: 1px solid var(--poster-cyan);
+            color: var(--poster-cyan);
+            padding: 0.6rem 1.8rem;
+            font-family: var(--font-code);
+            font-size: 0.88rem;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(8px);
+            max-width: 920px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        /* =======================================================
+           MIRAI '26 TITLE: RESTORED ORIGINAL ORBITRON / METALLIC FONT
+           ======================================================= */
+        .poster-title-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            flex-wrap: nowrap;
+        }
+
+        /* RESTORED ORBITRON SOLID METALLIC MIRAI */
+        .hero-title-mirai {
+            font-family: var(--font-title);
+            font-weight: 900;
+            font-size: 6rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            line-height: 1;
+            
+            color: #ffffff;
+            background: linear-gradient(
+                180deg, 
+                #ffffff 0%, 
+                #f1f5f9 40%, 
+                #94a3b8 70%, 
+                #ffffff 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            filter: 
+                drop-shadow(0 0 10px rgba(255, 255, 255, 0.9))
+                drop-shadow(0 0 28px rgba(255, 255, 255, 0.8))
+                drop-shadow(0 0 50px rgba(0, 255, 102, 0.5))
+                drop-shadow(0 12px 25px rgba(0, 0, 0, 0.95));
+            
+            position: relative;
+            z-index: 2;
+        }
+
+        /* RESTORED ORBITRON HIGH-BRIGHTNESS NEON GREEN '26 */
+        .hero-title-26 {
+            font-family: var(--font-title);
+            font-weight: 900;
+            font-size: 6rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            line-height: 1;
+            
+            color: #00ff66;
+            background: linear-gradient(
+                180deg, 
+                #ffffff 0%, 
+                #86efac 30%, 
+                #00ff66 70%, 
+                #059669 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            filter: 
+                drop-shadow(0 0 12px #00ff66)
+                drop-shadow(0 0 30px #00ff66)
+                drop-shadow(0 0 60px rgba(0, 255, 102, 0.9))
+                drop-shadow(0 12px 25px rgba(0, 0, 0, 0.95));
+            z-index: 3;
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-title);
+            font-size: 1.25rem;
+            color: #ffffff;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-subtitle span {
+            color: var(--poster-green);
+            text-shadow: 0 0 16px var(--poster-green);
+        }
+
+        /* --- COUNTDOWN TIMER --- */
+        .timer-grid {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .timer-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-tech);
+            border-top: 3px solid var(--poster-green);
+            padding: 1.2rem 1.5rem;
+            min-width: 105px;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background: var(--poster-green);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+
+        .timer-num {
+            font-family: var(--font-title);
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--poster-green);
+            text-shadow: 0 0 18px var(--doom-glow);
+            line-height: 1;
+        }
+
+        .timer-unit {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-top: 0.4rem;
+        }
+
+        /* --- STATS BAR --- */
+        .stats-banner {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto 4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-tech);
+            padding: 2rem;
+            border-radius: 8px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-val {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--poster-cyan);
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+
+        .stat-lbl {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* --- SECTION HEADERS --- */
+        .section-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: var(--font-title);
+            font-size: 2.4rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #fff;
+            display: inline-block;
+            position: relative;
+            font-weight: 800;
+        }
+
+        .section-title::before, .section-title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 50px;
+            height: 2px;
+            background: var(--poster-green);
+            box-shadow: 0 0 10px var(--poster-green);
+        }
+
+        .section-title::before { left: -70px; }
+        .section-title::after { right: -70px; }
+
+        .section-desc {
+            color: var(--text-secondary);
+            max-width: 750px;
+            margin: 1rem auto 0;
+            font-size: 1.15rem;
+        }
+
+        /* --- EVENTS GRID --- */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2.2rem;
+        }
+
+        .event-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-tech);
+            border-radius: 8px;
+            padding: 2.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--poster-green), var(--poster-cyan), transparent);
+            transition: 0.6s;
+        }
+
+        .event-card:hover::before {
+            left: 100%;
+        }
+
+        .event-card:hover {
+            transform: translateY(-8px);
+            background: var(--bg-card-hover);
+            border-color: var(--poster-green);
+            box-shadow: 0 20px 40px rgba(0, 255, 102, 0.2);
+        }
+
+        .event-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-family: var(--font-code);
+            font-size: 0.7rem;
+            color: var(--poster-cyan);
+            background: rgba(0, 217, 255, 0.12);
+            border: 1px solid rgba(0, 217, 255, 0.35);
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .event-icon {
+            font-size: 2.8rem;
+            color: var(--poster-green);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 18px var(--doom-glow);
+        }
+
+        .event-title {
+            font-family: var(--font-title);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .event-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+        }
+
+        .event-fee-badge {
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: var(--poster-gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-action {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1.2rem;
+        }
+
+        /* --- TERMINAL CONSOLE --- */
+        .terminal-container {
+            background: #02060a;
+            border: 1px solid var(--border-tech);
+            border-radius: 8px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+            position: relative;
+            font-family: var(--font-code);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .terminal-header {
+            background: #0a131c;
+            padding: 0.75rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot { width: 11px; height: 11px; border-radius: 50%; }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .terminal-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .terminal-body {
+            padding: 1.8rem;
+            min-height: 220px;
+            max-height: 300px;
+            overflow-y: auto;
+            color: var(--poster-green);
+            font-size: 0.95rem;
+        }
+
+        .terminal-line { margin-bottom: 0.5rem; }
+
+        .terminal-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.8rem 1.8rem 1.5rem;
+            background: #02060a;
+        }
+
+        .terminal-prompt { color: var(--poster-cyan); font-weight: 600; }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: var(--font-code);
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+        }
+
+        /* --- MODAL --- */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(1, 4, 9, 0.94);
+            backdrop-filter: blur(14px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .modal-box {
+            background: var(--bg-metallic);
+            border: 1px solid var(--poster-green);
+            box-shadow: 0 0 50px var(--doom-glow);
+            width: 100%;
+            max-width: 720px;
+            padding: 2.5rem;
+            border-radius: 8px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.5rem;
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .modal-close:hover { color: var(--poster-green); }
+
+        .modal-header-tag {
+            font-family: var(--font-code);
+            color: var(--poster-cyan);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: var(--font-code);
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            font-weight: 700;
+            color: var(--poster-green);
+            font-size: 1rem;
+            font-family: var(--font-title);
+        }
+
+        .modal-coordinators-box {
+            background: rgba(0, 217, 255, 0.08);
+            border: 1px solid rgba(0, 217, 255, 0.25);
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .modal-coordinators-title {
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            color: var(--poster-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .coordinator-item {
+            font-family: var(--font-code);
+            font-size: 0.95rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coordinator-item i {
+            color: var(--poster-green);
+        }
+
+        .modal-rules-list {
+            margin: 1rem 0 1.5rem;
+            padding-left: 1.2rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .modal-rules-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #010306;
+            border-top: 1px solid var(--border-tech);
+            text-align: center;
+            padding: 3.5rem 2rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* RESPONSIVE LAYOUT BREAKPOINTS */
+        @media (max-width: 990px) {
+            header { padding: 0.8rem 1.2rem; flex-wrap: wrap; gap: 10px; }
+            .nav-menu { display: none; }
+            .hero-kec-logo { max-width: 210px; }
+            .poster-title-container { gap: 0.6rem; }
+            .hero-title-mirai { font-size: 3.6rem; letter-spacing: 3px; }
+            .hero-title-26 { font-size: 3.6rem; letter-spacing: 3px; }
+            .hero-subtitle { font-size: 0.95rem; letter-spacing: 2px; }
+            .timer-grid { gap: 0.8rem; }
+            .timer-card { min-width: 75px; padding: 0.8rem; }
+            .timer-num { font-size: 1.8rem; }
+            .stats-banner { flex-direction: column; gap: 1.5rem; }
+            .section-title::before, .section-title::after { display: none; }
+            .institution-logo { height: 38px; }
+        }
+
+        @media (max-width: 520px) {
+            .hero-title-mirai { font-size: 2.6rem; letter-spacing: 2px; }
+            .hero-title-26 { font-size: 2.6rem; letter-spacing: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ATMOSPHERIC BACKGROUND GRADIENTS & SCROLLING DIGITAL RAIN CANVAS -->
+    <div class="poster-bg-wrapper"></div>
+    <canvas id="posterCanvas"></canvas>
+    <div class="circuit-header-overlay"></div>
+
+    <!-- NAVIGATION HEADER -->
+    <header>
+        <!-- LEFT: IETE LOGO (.JPG) + MIRAI BRAND WITH RESTORED ORBITRON FONT -->
+        <div class="header-brand-left">
+            <img src="IETE logo.jpg" alt="IETE Logo" class="institution-logo" id="ieteLogo">
+            <a href="#" class="brand-logo">
+                MIRAI<span>'26</span>
+            </a>
+        </div>
+
+        <!-- RIGHT: NAV, REGISTER NOW! BUTTON, AND KEC LOGO -->
+        <div class="header-brand-right">
+            <ul class="nav-menu">
+                <li><a href="#about" class="nav-link">Directive</a></li>
+                <li><a href="#events" class="nav-link">Arenas</a></li>
+                <li><a href="#terminal" class="nav-link">Console</a></li>
+            </ul>
+            <a href="#events" class="btn-tactical">Register Now!</a>
+            <img src="KEC logo.png" alt="Kongu Engineering College Logo" class="institution-logo" id="kecHeaderLogo">
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <!-- KEC LOGO 1 IN CENTER ABOVE WORDINGS -->
+        <img src="kec logo1.png" alt="Kongu Engineering College Logo" class="hero-kec-logo" id="heroKecLogo">
+
+        <!-- SYMPOSIUM TAG WORDINGS -->
+        <div class="symposium-tag">
+            National Level Technical Symposium organized by the IETE-Student Forum
+        </div>
+
+        <!-- MIRAI AND '26 PLACED NEXT TO EACH OTHER IN RESTORED CLASSIC ORBITRON FONT -->
+        <div class="poster-title-container">
+            <div class="hero-title-mirai">MIRAI</div>
+            <div class="hero-title-26">'26</div>
+        </div>
+
+        <p class="hero-subtitle">SEPTEMBER 19, 2026 • <span>INNOVATE • INSPIRE • IMPACT</span></p>
+
+        <!-- Dynamic Countdown Clock -->
+        <div class="timer-grid">
+            <div class="timer-card">
+                <div class="timer-num" id="days">00</div>
+                <div class="timer-unit">Days</div>
+            </div>
+            <div class="timer-card">
+                <div class="timer-num" id="hours">00</div>
+                <div class="timer-unit">Hours</div>
+            </div>
+            <div class="timer-card">
+                <div class="timer-num" id="mins">00</div>
+                <div class="timer-unit">Mins</div>
+            </div>
+            <div class="timer-card">
+                <div class="timer-num" id="secs">00</div>
+                <div class="timer-unit">Secs</div>
+            </div>
+        </div>
+
+        <div>
+            <a href="#events" class="btn-tactical" style="padding: 0.85rem 2.4rem; font-size: 0.95rem;">Explore Battlegrounds</a>
+        </div>
+    </section>
+
+    <!-- STATS BANNER -->
+    <div class="stats-banner">
+        <div class="stat-item">
+            <div class="stat-val">7+</div>
+            <div class="stat-lbl">National Arenas</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">19 SEP</div>
+            <div class="stat-lbl">Event Date</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">6H</div>
+            <div class="stat-lbl">Hackathon Sprint</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">CERTIFICATES</div>
+            <div class="stat-lbl">For All Participants</div>
+        </div>
+    </div>
+
+    <!-- ABOUT DIRECTIVE SECTION -->
+    <section class="section-wrapper" id="about">
+        <div class="section-header">
+            <h2 class="section-title">The Directive</h2>
+            <p class="section-desc">
+                Organized by the <strong>IETE-Student Forum of Kongu Engineering College</strong>, MIRAI '26 brings together top engineering minds to tackle high-impact challenges across embedded systems, computing, autonomous robotics, and software engineering on September 19, 2026.
+            </p>
+        </div>
+    </section>
+
+    <!-- EVENTS ARENAS SECTION -->
+    <section class="section-wrapper" id="events">
+        <div class="section-header">
+            <h2 class="section-title">Battlegrounds</h2>
+            <p class="section-desc">Select an arena to review official guidelines, rules, and student coordinator contact details before registering.</p>
+        </div>
+
+        <div class="events-grid">
+            
+            <!-- Event 1: Paper Presentation -->
+            <div class="event-card">
+                <span class="event-badge">Academic</span>
+                <div>
+                    <i class="fa-solid fa-file-lines event-icon"></i>
+                    <h3 class="event-title">Paper Presentation</h3>
+                    <p class="event-desc">Present research with minimum 8 slides. Strict original content policy.</p>
+                    <div class="event-fee-badge"><i class="fa-solid fa-ticket"></i> Fee: ₹150 / person</div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-tactical" style="flex:1;" onclick="openEventLanding('paper')">View Details</button>
+                    <a href="https://forms.gle/aSBT94yfZEVGk3h87" target="_blank" class="btn-tactical btn-cyan" style="flex:1;">Register <i class="fa-solid fa-external-link"></i></a>
+                </div>
+            </div>
+
+            <!-- Event 2: Project Presentation -->
+            <div class="event-card">
+                <span class="event-badge">Hardware & SW</span>
+                <div>
+                    <i class="fa-solid fa-microchip event-icon"></i>
+                    <h3 class="event-title">Project Presentation</h3>
+                    <p class="event-desc">Demonstrate working prototypes with 5-7 mins presentation + 2-3 mins Q&A session.</p>
+                    <div class="event-fee-badge"><i class="fa-solid fa-ticket"></i> Fee: ₹150 / person</div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-tactical" style="flex:1;" onclick="openEventLanding('project')">View Details</button>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdRQcNUoXb0TKQZawMkG5gDCzRcgaXYEy29YKfoUgMgUhD3iA/viewform?usp=dialog" target="_blank" class="btn-tactical btn-cyan" style="flex:1;">Register <i class="fa-solid fa-external-link"></i></a>
+                </div>
+            </div>
+
+            <!-- Event 3: Hackathon -->
+            <div class="event-card">
+                <span class="event-badge">Development</span>
+                <div>
+                    <i class="fa-solid fa-terminal event-icon"></i>
+                    <h3 class="event-title">Hackathon</h3>
+                    <p class="event-desc">An intense 6-hour rapid development sprint to build production software/hardware solutions.</p>
+                    <div class="event-fee-badge"><i class="fa-solid fa-ticket"></i> Fee: ₹450 / team (₹150/person)</div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-tactical" style="flex:1;" onclick="openEventLanding('hackathon')">View Details</button>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd3am2yOVFwQMZoJGn8GhPIF8VqwFeCmigFZ15Y-vwhifvs2g/viewform" target="_blank" class="btn-tactical btn-cyan" style="flex:1;">Register <i class="fa-solid fa-external-link"></i></a>
+                </div>
+            </div>
+
+            <!-- Event 4: Workshop -->
+            <div class="event-card">
+                <span class="event-badge">Training</span>
+                <div>
+                    <i class="fa-solid fa-gears event-icon"></i>
+                    <h3 class="event-title">Technical Workshop</h3>
+                    <p class="event-desc">Hands-on activities covering VLSI Technology & Drone Technology with certificate included.</p>
+                    <div class="event-fee-badge"><i class="fa-solid fa-ticket"></i> Fee: ₹200 / participant</div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-tactical" style="flex:1;" onclick="openEventLanding('workshop')">View Details</button>
+                    <a href="https://forms.gle/PP87kvWpgg8pj2o68" target="_blank" class="btn-tactical btn-cyan" style="flex:1;">Register <i class="fa-solid fa-external-link"></i></a>
+                </div>
+            </div>
+
+            <!-- Event 5: Drone Racing -->
+            <div class="event-card">
+                <span class="event-badge">Robotics</span>
+                <div>
+                    <i class="fa-solid fa-drone event-icon"></i>
+                    <h3 class="event-title">Drone Racing</h3>
+                    <p class="event-desc">Bring your prototype drone model and compete across speed circuits under referee supervision.</p>
+                    <div class="event-fee-badge"><i class="fa-solid fa-ticket"></i> Fee: ₹200 / person</div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-tactical" style="flex:1;" onclick="openEventLanding('drone')">View Details</button>
+                    <a href="https://forms.gle/BKRaf2gMJjCYyjxh7" target="_blank" class="btn-tactical btn-cyan" style="flex:1;">Register <i class="fa-solid fa-external-link"></i></a>
+                </div>
+            </div>
+
+            <!-- Event 6: Line Follower -->
+            <div class="event-card">
+                <span class="event-badge">Autonomous</span>
+                <div>
+                    <i class="fa-solid fa-robot event-icon"></i>
+                    <h3 class="event-title">Line Follower</h3>
+                    <p class="event-desc">25cm max size, fully autonomous bots with on-board power competing in 2 attempts.</p>
+                    <div class="event-fee-badge"><i class="fa-solid fa-ticket"></i> Fee: ₹200 / person</div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-tactical" style="flex:1;" onclick="openEventLanding('linefollower')">View Details</button>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2cDmji8lXyZjNwKsyFNYTEHHg68ZlCO9KMtbKb8R1gBeNRw/viewform?usp=dialog" target="_blank" class="btn-tactical btn-cyan" style="flex:1;">Register <i class="fa-solid fa-external-link"></i></a>
+                </div>
+            </div>
+
+            <!-- Event 7: Hacksprint (Code Debugging) -->
+            <div class="event-card">
+                <span class="event-badge">Competitive</span>
+                <div>
+                    <i class="fa-solid fa-bug event-icon"></i>
+                    <h3 class="event-title">Hacksprint</h3>
+                    <p class="event-desc">Debug multi-file codebases and resolve syntax, logic, compilation & pointer errors within 30 mins.</p>
+                    <div class="event-fee-badge"><i class="fa-solid fa-ticket"></i> Fee: ₹100 / person</div>
+                </div>
+                <div class="card-action">
+                    <button class="btn-tactical" style="flex:1;" onclick="openEventLanding('debugging')">View Details</button>
+                    <a href="https://forms.gle/xpYvD47B7JRbWJSh8" target="_blank" class="btn-tactical btn-cyan" style="flex:1;">Register <i class="fa-solid fa-external-link"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- TERMINAL CONSOLE SECTION -->
+    <section class="section-wrapper" id="terminal">
+        <div class="section-header">
+            <h2 class="section-title">Command Console</h2>
+            <p class="section-desc">Interact directly with the MIRAI '26 terminal subsystem.</p>
+        </div>
+
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+                <div class="terminal-title">DOOMSDAY_OS // KEC_IETE_ONLINE</div>
+            </div>
+            <div class="terminal-body" id="terminalOutput">
+                <div class="terminal-line">[SYSTEM INITIALIZED]: MIRAI '26 PROTOCOL ENGINE</div>
+                <div class="terminal-line">[HOST]: KONGU ENGINEERING COLLEGE (IETE STUDENT FORUM)</div>
+                <div class="terminal-line">[DATE]: SEPTEMBER 19, 2026</div>
+                <div class="terminal-line">TYPE '<span style="color: #fff;">help</span>', '<span style="color: #fff;">events</span>', OR '<span style="color: #fff;">register</span>' TO EXECUTE COMMANDS.</div>
+            </div>
+            <div class="terminal-input-row">
+                <span class="terminal-prompt">iete@kec-mirai26:~$</span>
+                <input type="text" class="terminal-input" id="terminalInput" autofocus autocomplete="off">
+            </div>
+        </div>
+    </section>
+
+    <!-- LANDING PAGE MODAL FOR EVENTS -->
+    <div class="modal-backdrop" id="eventModal">
+        <div class="modal-box">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-header-tag" id="modalCategory">ACADEMIC ARENA</div>
+            <h3 id="modalTitle" class="event-title" style="font-size: 2.2rem; color: #fff; margin-bottom: 0.5rem;">Event Title</h3>
+            <p id="modalDesc" style="color: var(--text-secondary); margin-bottom: 1rem;"></p>
+
+            <div class="modal-meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Team Size</span>
+                    <span class="meta-value" id="modalTeam">2 - 3 Members</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Duration / Time Limit</span>
+                    <span class="meta-value" id="modalTime">10 Mins</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Registration Fee</span>
+                    <span class="meta-value" id="modalFee">₹150 / person</span>
+                </div>
+            </div>
+
+            <!-- Student Coordinators Box -->
+            <div class="modal-coordinators-box">
+                <div class="modal-coordinators-title"><i class="fa-solid fa-phone"></i> Event Coordinators</div>
+                <div id="modalCoordinatorsList"></div>
+            </div>
+
+            <h4 style="font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-top: 1.5rem;">Directives & Rules</h4>
+            <ul class="modal-rules-list" id="modalRules">
+                <li>Participants must carry college ID cards.</li>
+                <li>Decisions of the jury panel will be final and binding.</li>
+            </ul>
+
+            <div style="text-align: right; margin-top: 2rem;">
+                <a href="#" id="modalRegisterBtn" target="_blank" class="btn-tactical btn-cyan" style="padding: 0.8rem 2rem;">Proceed to Register <i class="fa-solid fa-external-link"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2026 MIRAI | Organized by IETE Student Forum, Kongu Engineering College.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">All Rights Reserved.</p>
+    </footer>
+
+    <!-- INTERACTIVE ENGINE SCRIPTS -->
+    <script>
+        /* --- 1. DIGITAL SCROLLING LETTERS & SYMBOLS BACKGROUND (MATRIX STREAM ENGINE) --- */
+        const canvas = document.getElementById('posterCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Mix of Japanese Katakana, Alphanumerics, and High-Tech Symbols
+        const characters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ01<>[]{}/=*+@#$%&';
+        const fontSize = 16;
+        let columns = Math.floor(window.innerWidth / fontSize);
+        let drops = [];
+
+        function initDrops() {
+            columns = Math.floor(window.innerWidth / fontSize);
+            drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -100;
+            }
+        }
+        initDrops();
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initDrops();
+        });
+
+        function drawMatrixRain() {
+            ctx.fillStyle = 'rgba(1, 4, 9, 0.12)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px "Fira Code", monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = characters.charAt(Math.floor(Math.random() * characters.length));
+                
+                if (Math.random() > 0.88) {
+                    ctx.fillStyle = '#00d9ff';
+                } else if (Math.random() > 0.95) {
+                    ctx.fillStyle = '#ffffff';
+                } else {
+                    ctx.fillStyle = '#00ff66';
+                }
+
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrixRain, 35);
+
+        /* --- 2. COUNTDOWN TIMER --- */
+        const targetDate = new Date('September 19, 2026 09:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = String(days).padStart(2, '0');
+                document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('mins').innerText = String(mins).padStart(2, '0');
+                document.getElementById('secs').innerText = String(secs).padStart(2, '0');
+            } else {
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('mins').innerText = "00";
+                document.getElementById('secs').innerText = "00";
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        /* --- 3. EVENT MODAL DATA & CONTROLLER --- */
+        const eventDetails = {
+            paper: {
+                category: "Academic Arena",
+                title: "Paper Presentation",
+                desc: "Present your novel research and innovations in front of an expert panel. Focus on original ideas and structured methodologies.",
+                team: "2 - 3 Members",
+                time: "Min 8 Slides (7 mins presentation + 3 mins Q&A)",
+                fee: "₹150 / person",
+                coordinators: [
+                    "Kaniga Y - 9345826162",
+                    "Donly Joseph A - 6385802456"
+                ],
+                link: "https://forms.gle/aSBT94yfZEVGk3h87",
+                rules: [
+                    "Maximum Team Size: 2 - 3 Members.",
+                    "Registration Fee: ₹150 / person.",
+                    "Slide presentation should be a minimum of 8 slides.",
+                    "No copyright violations or plagiarism permitted.",
+                    "Jury's decision is final and binding."
+                ]
+            },
+            project: {
+                category: "Hardware & SW Arena",
+                title: "Project Presentation",
+                desc: "Showcase physical hardware models, IoT applications, or software applications addressing real-world engineering problems.",
+                team: "2 - 3 Members",
+                time: "5–7 Mins presentation + 2–3 Mins Q&A",
+                fee: "₹150 / person",
+                coordinators: [
+                    "Bhavadharani Y - 8838196997",
+                    "Hariharan R B S - 7339530730"
+                ],
+                link: "https://docs.google.com/forms/d/e/1FAIpQLSdRQcNUoXb0TKQZawMkG5gDCzRcgaXYEy29YKfoUgMgUhD3iA/viewform?usp=dialog",
+                rules: [
+                    "Maximum Team Size: 2 - 3 Members.",
+                    "Registration Fee: ₹150 / person.",
+                    "All team members must be present during the presentation.",
+                    "Each team will be given a fixed time limit of 5–7 minutes for the presentation.",
+                    "An additional 2–3 minutes will be provided for the Q&A session.",
+                    "Working prototype model is mandatory for presentation.",
+                    "Jury's decision is final and binding."
+                ]
+            },
+            hackathon: {
+                category: "Development Arena",
+                title: "Hackathon",
+                desc: "An intense 6-hour rapid development sprint to engineer software or hardware solutions for live challenge statements.",
+                team: "Max 3 Members",
+                time: "6 Hours Sprint",
+                fee: "₹450 / team (₹150 per person)",
+                coordinators: [
+                    "Dharnesh G T - 9994013817",
+                    "Nivetha G - 93445 37697"
+                ],
+                link: "https://docs.google.com/forms/d/e/1FAIpQLSd3am2yOVFwQMZoJGn8GhPIF8VqwFeCmigFZ15Y-vwhifvs2g/viewform",
+                rules: [
+                    "Maximum size of the team: 3 Members.",
+                    "Duration: 6 Hours Hackathon.",
+                    "Registration Fee: ₹450 per team (₹150 per person).",
+                    "Participants must bring necessary software and hardware development setups."
+                ]
+            },
+            workshop: {
+                category: "Training Arena",
+                title: "Technical Workshop",
+                desc: "Hands-on industrial session covering modern VLSI technology workflows, RTL design, and drone assembly fundamentals.",
+                team: "Open to all students",
+                time: "Full Day Session",
+                fee: "₹200 / participant",
+                coordinators: [
+                    "SELVALAKSHITHA S - 8015920878",
+                    "SUBHASREE K - 6369821064"
+                ],
+                link: "https://forms.gle/PP87kvWpgg8pj2o68",
+                rules: [
+                    "Open to all college students.",
+                    "Registration Fee: ₹200 per participant.",
+                    "Includes sessions and hands-on activities covering VLSI Technology and Drone Technology.",
+                    "Participants will receive a Certificate of Participation upon successful completion.",
+                    "Participants must follow all instructions provided by the organizers throughout the workshop."
+                ]
+            },
+            drone: {
+                category: "Robotics Arena",
+                title: "Drone Racing",
+                desc: "Navigate custom-built quadcopters through high-speed obstacle tracks.",
+                team: "Max 2 - 3 Members",
+                time: "Circuit Laps",
+                fee: "₹200 / person",
+                coordinators: [
+                    "DHEEVITH SUBRAMANI - 8675097123",
+                    "FARHAN SULTANA - 80727 26004"
+                ],
+                link: "https://forms.gle/BKRaf2gMJjCYyjxh7",
+                rules: [
+                    "Open to all college students; maximum 2-3 members per team.",
+                    "Registration Fee: ₹200 per person.",
+                    "Every team must bring their own prototype model.",
+                    "Unsafe operation, intentional interference, unfair practices, or violation of organizer instructions leads to disqualification.",
+                    "The decision of the Chief Referee will be final."
+                ]
+            },
+            linefollower: {
+                category: "Autonomous Arena",
+                title: "Line Follower",
+                desc: "Build an autonomous robot capable of tracking line tracks with precision and maximum speed.",
+                team: "2 - 4 Members",
+                time: "2 Attempts Allowed",
+                fee: "₹200 / person",
+                coordinators: [
+                    "Janish - 8089365701",
+                    "Rithanya - 8778722368"
+                ],
+                link: "https://docs.google.com/forms/d/e/1FAIpQLSc2cDmji8lXyZjNwKsyFNYTEHHg68ZlCO9KMtbKb8R1gBeNRw/viewform?usp=dialog",
+                rules: [
+                    "Team Size: 2–4 members per team.",
+                    "Registration Fee: ₹200 per person.",
+                    "Robot must fit within 25 cm × 25 cm × 25 cm at start.",
+                    "Must be fully autonomous with on-board power; all remote control systems are strictly prohibited.",
+                    "2 attempts allowed (best time counts); runs must start only on the judge's signal.",
+                    "Track Violations: Completely leaving the track or causing deliberate track damage results in immediate disqualification.",
+                    "Disqualification: Any physical touch during a run disqualifies the attempt or incurs a strict time penalty.",
+                    "Judges can inspect robots anytime; their decisions are final and binding in all situations."
+                ]
+            },
+            debugging: {
+                category: "Competitive Coding",
+                title: "Hacksprint (Code Debugging)",
+                desc: "Find and fix bugs in multi-file codebases under time pressure.",
+                team: "1 - 2 Members",
+                time: "30 Minutes",
+                fee: "₹100 / person",
+                coordinators: [
+                    "SRENIDHI G P - 82480 11709",
+                    "DHIVYALAKSHMI R - 82483 09317"
+                ],
+                link: "https://forms.gle/xpYvD47B7JRbWJSh8",
+                rules: [
+                    "Team size: 1-2 Members.",
+                    "Registration Fee: ₹100 per person.",
+                    "Find & Fix: Debug the given multi-file codebase and achieve the expected output.",
+                    "Time Limit: Complete the challenge within 30 minutes.",
+                    "Modify, Don't Replace: You may edit the provided files, but complete program replacement is not allowed.",
+                    "Errors: Watch for syntax, logic, runtime, compilation, memory, pointer, function & inter-file errors.",
+                    "Win by Accuracy & Speed: Correct output is mandatory; earlier correct submission ranks higher.",
+                    "No External Help: Internet, AI, online compilers, code sharing, communication, or unfair assistance are strictly prohibited.",
+                    "Bring your own laptops with proper network connectivity."
+                ]
+            }
+        };
+
+        function openEventLanding(key) {
+            const item = eventDetails[key];
+            if (!item) return;
+
+            document.getElementById('modalCategory').innerText = item.category;
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalDesc').innerText = item.desc;
+            document.getElementById('modalTeam').innerText = item.team;
+            document.getElementById('modalTime').innerText = item.time;
+            document.getElementById('modalFee').innerText = item.fee;
+            document.getElementById('modalRegisterBtn').href = item.link;
+
+            const coordsContainer = document.getElementById('modalCoordinatorsList');
+            coordsContainer.innerHTML = item.coordinators.map(c => `
+                <div class="coordinator-item">
+                    <i class="fa-solid fa-user-gear"></i> ${c}
+                </div>
+            `).join('');
+
+            const rulesContainer = document.getElementById('modalRules');
+            rulesContainer.innerHTML = item.rules.map(r => `<li>${r}</li>`).join('');
+
+            document.getElementById('eventModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('eventModal').style.display = 'none';
+        }
+
+        window.onclick = function(e) {
+            const modal = document.getElementById('eventModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        };
+
+        /* --- 4. TERMINAL INTERACTIVE COMMAND CONSOLE --- */
+        const terminalInput = document.getElementById('terminalInput');
+        const terminalOutput = document.getElementById('terminalOutput');
+
+        terminalInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.trim().toLowerCase();
+                this.value = '';
+                
+                printTerminalLine(`iete@kec-mirai26:~$ ${command}`);
+                processCommand(command);
+            }
+        });
+
+        function printTerminalLine(text, isHTML = false) {
+            const div = document.createElement('div');
+            div.className = 'terminal-line';
+            if (isHTML) {
+                div.innerHTML = text;
+            } else {
+                div.textContent = text;
+            }
+            terminalOutput.appendChild(div);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function processCommand(cmd) {
+            if (cmd === 'help') {
+                printTerminalLine("AVAILABLE COMMANDS:", false);
+                printTerminalLine(" - help         : List available console directives");
+                printTerminalLine(" - events       : List all competition arenas");
+                printTerminalLine(" - register     : Show registration links for all arenas");
+                printTerminalLine(" - about        : Display information regarding KEC & IETE");
+                printTerminalLine(" - clear        : Clear console screen");
+            } else if (cmd === 'events' || cmd === 'arenas') {
+                printTerminalLine("[1] Paper Presentation - ₹150/person");
+                printTerminalLine("[2] Project Presentation - ₹150/person");
+                printTerminalLine("[3] Hackathon - ₹450/team (₹150/person)");
+                printTerminalLine("[4] Technical Workshop - ₹200/participant");
+                printTerminalLine("[5] Drone Racing - ₹200/person");
+                printTerminalLine("[6] Line Follower - ₹200/person");
+                printTerminalLine("[7] Hacksprint (Code Debugging) - ₹100/person");
+            } else if (cmd === 'register') {
+                printTerminalLine("EXECUTE REGISTRATION BY TYPING EVENT NAME OR LINKING DIRECTLY:");
+                printTerminalLine("<a href='#events' style='color: var(--poster-cyan);'>Click here to navigate to the Battlegrounds section</a>", true);
+            } else if (cmd === 'about') {
+                printTerminalLine("MIRAI '26 is hosted by IETE Student Forum, Department of ECE, Kongu Engineering College (KEC).");
+            } else if (cmd === 'clear') {
+                terminalOutput.innerHTML = '';
+            } else if (cmd === '') {
+                // Do nothing
+            } else {
+                printTerminalLine(`Command not recognized: '${cmd}'. Type 'help' for instructions.`, false);
+            }
+        }
+    </script>
+</body>
+</html>
